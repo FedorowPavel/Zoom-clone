@@ -12,6 +12,19 @@ const server = http.createServer(app)
 
 app.use(cors())
 
+let connectedUsers = [];
+let rooms = [];
+
+app.get('/api/room-exists/:roomId', (req,res) => {
+  const {roomId} = req.params
+  const room = rooms.find(room => room.id === roomId)
+  if(room) {
+
+  } else {
+
+  }
+})
+
 const io = require('socket.io')(server, {
   cors: {
     origin: '*',
