@@ -19,9 +19,13 @@ app.get('/api/room-exists/:roomId', (req,res) => {
   const {roomId} = req.params
   const room = rooms.find(room => room.id === roomId)
   if(room) {
-
+    if(room.connectedUsers.length > 3) {
+      return res.send({roomExists: true, full: true})
+    } else {
+      return res.send({roomExists: true, full: false})
+    }
   } else {
-
+    return res.send({roomExists: false})
   }
 })
 
