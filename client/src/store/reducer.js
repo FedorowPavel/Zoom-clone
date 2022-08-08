@@ -4,7 +4,7 @@ const initState = {
   identity: '',
   isRoomHost: false,
   connectOnlyWithAudio: false,
-  roomId: null,
+  roomId: 0,
 }
 
 const reducer = (state = initState, action) => {
