@@ -110,6 +110,17 @@ const joinRoomHandler = (data, socket) => {
   //add new user to connected users
   connectedUsers = [...connectedUsers, newUser]
 
+  //emit to all users which are in this room to prepare for PEER connection
+  room.connectedUsers.forEach(connectedUser => {
+    if(connectedUser.socketId !== socket.id) {
+      const data = {
+        connUserSocketId: socket.id
+      }
+
+      io.to(connectedUser.socketId).emit('connection-prepare', data)
+    }
+  })
+
   io.to(roomId).emit('room-update', {connectedUsers: room.connectedUsers})
 }
 

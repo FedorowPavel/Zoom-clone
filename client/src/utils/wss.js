@@ -1,6 +1,7 @@
 import io from 'socket.io-client'
 import store from '../store/store'
 import {setParticipants, setRoomIdAction} from "../store/actions";
+import * as webRTCHandler from './webRTChandler'
 
 
 const SERVER = 'http://localhost:5002';
@@ -23,6 +24,12 @@ export const connectWithSocketIOServer = () => {
   socket.on('room-update', (data) => {
     const {connectedUsers} = data;
     store.dispatch(setParticipants(connectedUsers))
+  })
+
+  socket.on('connection-prepare', (data) => {
+    const {connUserSocketId} = data;
+
+    webRTCHandler.prepareNewPeerConnection(connUserSocketId, false)
   })
 }
 
