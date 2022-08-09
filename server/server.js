@@ -36,6 +36,10 @@ const io = require('socket.io')(server, {
   }
 })
 
+io.on('connection', (socket) => {
+  console.log(`user connected to server with wss ${socket.id}`)
+})
+
 server.listen(PORT, () => {
   console.log(`server is listening on ${PORT}`)
 })
