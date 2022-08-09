@@ -38,7 +38,47 @@ const io = require('socket.io')(server, {
 
 io.on('connection', (socket) => {
   console.log(`user connected to server with wss ${socket.id}`)
+
+  socket.on('create-new-room', (data) => {
+    createNewRoomHandler(data, socket)
+  })
 })
+
+//handlers
+const createNewRoomHandler = (data, socket) => {
+  console.log('host room is creating new room', data)
+  const {identity} = data;
+
+  const roomId = uuidv4();
+
+  //create new user
+  const newUser = {
+    userName: identity,
+    id: uuidv4(),
+    socketId: socket.id,
+    roomId
+  }
+
+  //push user to connected users
+  connectedUsers = [...connectedUsers, newUser];
+
+  //create new room
+  const newRoom = {
+    id: roomId,
+    connectedUsers: [newUser]
+  }
+
+  //join socket io room
+  socket.join(roomId)
+
+  rooms = [...rooms, newRoom]
+
+  //emit to that client which created that room roomid
+  socket.emit('room-id', {roomId})
+
+  //emit event to all users connected to that room about new users
+
+}
 
 server.listen(PORT, () => {
   console.log(`server is listening on ${PORT}`)

@@ -1,5 +1,6 @@
 import store from '../store/store'
 import {setShowOverlay} from "../store/actions";
+import * as wss from '../utils/wss'
 
 const defaultConstrains = {
   audio: true,
@@ -19,7 +20,8 @@ export const getLocalPreviewAndInitRoomConnection = async (
       localStream = stream;
       showLocalVideoPreview(localStream)
       store.dispatch(setShowOverlay(false))
-      // isRoomHost ? wss.createNewRoom(identity) : wss.joinRoom(roomId, identity)
+
+      isRoomHost ? wss.createNewRoom(identity) : wss.joinRoom(identity, roomId)
     })
     .catch(console.log)
 }
