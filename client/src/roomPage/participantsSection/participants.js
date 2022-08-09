@@ -1,22 +1,5 @@
 import React from 'react';
-
-const list = [
-  {
-    identity: 'Pavel',
-
-  },
-  {
-    identity: 'Anna',
-
-  },
-  {
-    identity: 'Marek',
-
-  },
-  {
-    identity: 'Darius',
-  }
-]
+import {connect} from "react-redux";
 
 const Participant = (props) => {
   const {identity, lastItem, participant} = props
@@ -27,15 +10,15 @@ const Participant = (props) => {
   </>
 }
 
-const Participants = () => {
+const Participants = ({participants}) => {
   return (
     <div className='participants_container'>
-      {list.map((item, index) => {
+      {participants.map((item, index) => {
         return (
           <Participant
-            identity={item.identity}
-            key={item.identity}
-            lastItem={list.length - 1 === index}
+            identity={item.userName}
+            key={item.id}
+            lastItem={participants.length - 1 === index}
             participant={item}/>
         )
       })}
@@ -43,4 +26,10 @@ const Participants = () => {
   );
 };
 
-export default Participants;
+const mapStoreStateToProps = (state) => {
+  return {
+    ...state
+  }
+}
+
+export default connect(mapStoreStateToProps)(Participants);
