@@ -46,6 +46,10 @@ io.on('connection', (socket) => {
   socket.on('join-room', (data) => {
     joinRoomHandler(data, socket);
   })
+
+  socket.on('disconnect', () => {
+    disconnectHandler(socket)
+  })
 })
 
 //handlers
@@ -107,6 +111,31 @@ const joinRoomHandler = (data, socket) => {
   connectedUsers = [...connectedUsers, newUser]
 
   io.to(roomId).emit('room-update', {connectedUsers: room.connectedUsers})
+}
+
+const disconnectHandler = (socket) => {
+  //if user registered - remove him
+  const user = connectedUsers.find(user => user.socketId === socket.id)
+  if(user) {
+    //remove user from room in server
+    const room = rooms.find(room => room.id === user.roomId)
+    room.connectedUsers = room.connectedUsers.filter(user => user.socketId !== socket.id)
+
+    //leave socket io room
+    socket.leave(user.roomId)
+
+    //TODO
+    //close the room if 0 users left
+    if(room.connectedUsers.length) {
+      //emit event to rest users in this room
+      io.to(room.id).emit('room-update', {
+        connectedUsers: room.connectedUsers
+      })
+    } else {
+      rooms = rooms.filter(r => r.id !== room.id);
+    }
+
+  }
 }
 
 
