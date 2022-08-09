@@ -30,7 +30,20 @@ export const connectWithSocketIOServer = () => {
     const {connUserSocketId} = data;
 
     webRTCHandler.prepareNewPeerConnection(connUserSocketId, false)
+
+    //inform user which just join room that we have prepared for incoming connection
+    socket.emit('connection-init', {connUserSocketId: connUserSocketId})
   })
+
+  socket.on('connection-signal', (data) => {
+    webRTCHandler.handleSignalingData(data)
+  })
+
+  socket.on('connection-init', data => {
+    const {connUserSocketId} = data;
+    webRTCHandler.prepareNewPeerConnection(connUserSocketId, true)
+  })
+
 }
 
 
@@ -49,4 +62,8 @@ export const joinRoom = (identity, roomId) => {
   }
   socket.emit('join-room', data)
 
+}
+
+export const signalPeerData = (signalData) => {
+  socket.emit('connection-signal', signalData);
 }

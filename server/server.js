@@ -50,6 +50,16 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     disconnectHandler(socket)
   })
+
+  socket.on('connection-signal', (data) => {
+    signalingHandler(data, socket)
+  })
+
+  socket.on('connection-init', (data) => {
+    initializeConnectionHandler(data, socket)
+  })
+
+
 })
 
 //handlers
@@ -147,6 +157,23 @@ const disconnectHandler = (socket) => {
     }
 
   }
+}
+
+const signalingHandler = (data, socket) => {
+  const {connUserSocketId, signal} = data;
+
+  const signalingData = {signal, connUserSocketId: socket.id};
+
+  io.to(connUserSocketId).emit('connection-signal', signalingData)
+}
+
+//info from clients which are already in room that they are prepared for incoming connections
+const initializeConnectionHandler = (data, socket) => {
+  const {connUserSocketId} = data;
+
+  const initData = {connUserSocketId: socket.id};
+
+  io.to(connUserSocketId).emit('connection-init', initData)
 }
 
 
