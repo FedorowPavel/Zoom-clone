@@ -154,3 +154,13 @@ const addStream = (stream, connUserSocketId) => {
   videoContainer.appendChild(videoElement);
   videosContainer.appendChild(videoContainer)
 }
+
+
+///////////////////////// buttons logic ///////////////////////////////
+export const toggleMic = (isMuted) => {
+  localStream.getAudioTracks()[0].enabled = isMuted
+}
+
+export const toggleCamera = (isDisabled) => {
+  localStream.getVideoTracks()[0].enabled = isDisabled
+}
