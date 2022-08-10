@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import switchImage from '../../assets/images/switchToScreenSharing.svg'
 import LocalScreenSharingPreview from "./localScreenSharingPreview";
+import * as webRTCHandler from '../../utils/webRTChandler'
 
 const constrains = {
   audio: false,
@@ -21,9 +22,11 @@ const SwitchToScreenShareButton = () => {
       }
       if (stream) {
         setScreenSharingStream(stream)
+        webRTCHandler.toggleScreenSharing(isSharing, stream)
         setIsSharing(true)
       }
     }  else {
+      webRTCHandler.toggleScreenSharing(isSharing)
       setIsSharing(false)
       screenSharingStream.getTracks().forEach(t => t.stop())
       screenSharingStream(null)
