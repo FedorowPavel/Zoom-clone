@@ -1,27 +1,7 @@
 import React from 'react';
+import {connect} from "react-redux";
 
-const mock = [
-  {
-    content: 'hey',
-    identity: 'Pavel',
-    messageCreatedByMe: true,
-  },
-  {
-    content: 'yes i see you',
-    identity: 'Max',
-    messageCreatedByMe: false,
-  },
-  {
-    content: 'bla bla bla',
-    identity: 'Marek',
-    messageCreatedByMe: false,
-  },
-  {
-    content: 'yuhoooooo',
-    identity: 'Marek',
-    messageCreatedByMe: false,
-  },
-]
+
 
 const Message = ({author, content, sameAuthor, messageCreatedByMe}) => {
   const alignClass = messageCreatedByMe ? 'message_align_right' : 'message_align_left'
@@ -39,11 +19,11 @@ const Message = ({author, content, sameAuthor, messageCreatedByMe}) => {
 
 }
 
-const Messages = () => {
+const Messages = ({messages}) => {
   return (
     <div className='messages_container'>
-      {mock.map((message, index) => {
-        const sameAuthor = index > 0 && message.identity === mock[index-1].identity
+      {messages.map((message, index) => {
+        const sameAuthor = index > 0 && message.identity === messages[index-1].identity
 
         return (
           <Message
@@ -59,4 +39,10 @@ const Messages = () => {
   );
 };
 
-export default Messages;
+const mapStoreStateToProps = (state) => {
+  return {
+    ...state
+  }
+}
+
+export default connect(mapStoreStateToProps)(Messages);

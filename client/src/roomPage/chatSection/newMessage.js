@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 import sendMessageButton from '../../assets/images/send.svg'
+import {sendMessageUsingDataChannel} from "../../utils/webRTChandler";
+import * as webRTCHandler from '../../utils/webRTChandler'
 
 const NewMessage = () => {
   const [message, setMessage] = useState('')
@@ -11,8 +13,7 @@ const NewMessage = () => {
   const handleKeyPressed = (e) => {
     if(e.key === 'Enter') {
       e.preventDefault();
-      //send message to other users
-      console.log('sending message....')
+      sendMessage()
       setMessage('')
 
     }
@@ -20,7 +21,7 @@ const NewMessage = () => {
 
   const sendMessage = () => {
     if(message.length) {
-      console.log('sending message to other users', message)
+      webRTCHandler.sendMessageUsingDataChannel(message)
       setMessage('')
     }
   }
