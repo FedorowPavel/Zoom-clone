@@ -44,6 +44,10 @@
     box-shadow: 2px 20px 5px rgba(0, 82, 201, 0.05);
 }
 
+.new_message_container img{
+    height: 30px;
+}
+
 .new_message_textarea:focus {
     outline: none;
 }
