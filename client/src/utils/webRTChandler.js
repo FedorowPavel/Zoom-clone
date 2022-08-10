@@ -5,7 +5,10 @@ import Peer from 'simple-peer'
 
 const defaultConstrains = {
   audio: true,
-  video: true
+  video: {
+    width: 480
+  },
+
 }
 
 let localStream;
@@ -79,6 +82,27 @@ export const handleSignalingData = (data) => {
   peers[data.connUserSocketId].signal(data.signal)
 }
 
+export const removePeerConnection = (data) => {
+  const {socketId} = data;
+  const videoContainer = document.getElementById(socketId)
+  const videoElement = document.getElementById(`${socketId}-video`)
+
+  if(videoContainer && videoElement) {
+    const tracks = videoElement.srcObject.getTracks();
+    tracks.forEach(t => t.stop())
+    videoElement.srcObject = null;
+    videoContainer.removeChild(videoElement)
+
+    videoContainer.parentNode.removeChild(videoContainer)
+
+    if(peers[socketId]) {
+      peers[socketId].destroy()
+    }
+    delete peers[socketId]
+  }
+
+}
+
 
 /////////////////////////////// UI /////////////////////////////
 export const showLocalVideoPreview = (stream) => {
@@ -103,5 +127,30 @@ export const showLocalVideoPreview = (stream) => {
 
 //displaying incoming stream
 const addStream = (stream, connUserSocketId) => {
+  const videosContainer = document.getElementById('videos_portal');
+  const videoContainer = document.createElement('div')
+  videoContainer.id = connUserSocketId
+  videoContainer.classList.add('video_track_container')
 
+  const videoElement = document.createElement('video');
+  videoElement.autoplay = true;
+  videoElement.muted = true;
+
+  videoElement.srcObject = stream;
+  videoElement.id = `${connUserSocketId}-video`
+
+  videoElement.onloadedmetadata = () => {
+    videoElement.play()
+  }
+
+  videoElement.addEventListener('click', () => {
+    if(videoElement.classList.contains('full_screen')) {
+      videoElement.classList.remove('full_screen')
+    } else {
+      videoElement.classList.add('full_screen')
+    }
+  })
+
+  videoContainer.appendChild(videoElement);
+  videosContainer.appendChild(videoContainer)
 }

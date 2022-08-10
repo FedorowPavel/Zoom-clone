@@ -148,6 +148,9 @@ const disconnectHandler = (socket) => {
     //TODO
     //close the room if 0 users left
     if(room.connectedUsers.length) {
+      //emit to all users which still in the room that user disconnected
+      io.to(room.id).emit('user-disconnected', {socketId: socket.id})
+
       //emit event to rest users in this room
       io.to(room.id).emit('room-update', {
         connectedUsers: room.connectedUsers
